@@ -4,6 +4,7 @@ Musician Poster is a website that connects Musician by posting gigs and vacancie
 ## Feautures
 * Post Gigs
 * Post Vacancies
+* Market Place for Musical Instruments
 
 
 # Contributors
