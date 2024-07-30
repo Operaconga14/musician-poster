@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white justify-content-between ">
+    <div class="container-fluid">
+        <a [routerLink]="[ '' ]" class="text-white nav-brand text-decoration-none">
+            <h4 class="fw-bolder">{{title}}</h4>
+        </a>
+        <!-- toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Offcanvas NavBar -->
+        <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title text-white" id="offcanvasNavbarLabel">{{title}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3" *ngFor="let link of nav_detail">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link active" aria-current="page" href="#">{{link.name}}</a> -->
+                        <a class="nav-link" [routerLink]="[ '/', link.url ]">{{link.name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
