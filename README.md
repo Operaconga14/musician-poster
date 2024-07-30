@@ -11,3 +11,5 @@ Musician Poster is a website that connects Musician by posting gigs and vacancie
 * Olatunde Tobiloba => TeePrime => Lead Guitar
 * Makinde pelumi => P.classic => Drums
 * Ahmed Prosper => Prospertheguitarist => Lead Guitar
+* Timi Jones => TimJones => KeyboardList
+* Adesoun Kolawole => Atwole => Keyboardlist
