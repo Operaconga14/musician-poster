@@ -125,7 +125,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": ["bootstrap/dist/js/bootstrap.js"]
           }
         }
       }
