@@ -4,7 +4,8 @@
   "description": "Musicians Poster Api Back end",
   "main": "server.js",
   "scripts": {
-    "test": "nodemon api/server.js"
+    "test": "nodemon api/server.js",
+    "dev": "nodemon api/server.js"
   },
   "repository": {
     "type": "git",
