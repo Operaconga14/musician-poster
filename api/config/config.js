@@ -1,3 +1,4 @@
+const cloudinary = require('cloudinary')
 require('dotenv').config()
 
 
@@ -7,7 +8,11 @@ const api_url = {
     port: process.env.PORT
 }
 
+// Cloudinary config
+
+
 
 module.exports = {
-    api_url
+    api_url,
+    cloudinary
 }
