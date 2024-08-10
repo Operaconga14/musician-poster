@@ -2,10 +2,14 @@ const express = require('express')
 const { user_router } = require('./routes/routes_controller')
 const { api_url } = require('./config/config')
 const { connectToDbCloud } = require('./db/db_connection')
+const morgan = require('morgan')
 
 
 // Application configuration
 const app = express()
+
+// Middleware config
+app.use(morgan('tiny'))
 
 // Route configuration
 app.get(`${api_url.url}`, (req, res) => {
