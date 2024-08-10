@@ -7,6 +7,11 @@ async function createAndSetupDatabase() {
     // create database and use database
     setupDatabase(db_options.db_name)
     createTable(db_queries.user_table_name, db_queries.user_query)
+    createTable(db_queries.events_table_name, db_queries.events_query)
+    createTable(db_queries.post_table_name, db_queries.post_query)
+    createTable(db_queries.gadget_table_name, db_queries.gadget_query)
+    createTable(db_queries.gigs_table_name, db_queries.gigs_query)
+    createTable(db_queries.services_table_name, db_queries.services_query)
 
 }
 

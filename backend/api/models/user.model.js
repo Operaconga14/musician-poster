@@ -15,7 +15,14 @@ const User = sequelize.define(db_queries.user_table_name, {
         type: DataTypes.STRING,
         allowNull: false
     },
+    picture: {
+        type: DataTypes.STRING,
+    },
     password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    role: {
         type: DataTypes.STRING,
         allowNull: false
     },
