@@ -1,5 +1,5 @@
 const mysql2 = require('mysql2');
-const { cloud_db_options } = require('../config/config');
+const { cloud_db_options, db_queries, sequelize } = require('../config/config');
 
 
 // Creating cloud database connection
@@ -25,9 +25,36 @@ async function connectToDbCloud() {
     })
 }
 
+function setupAndCreateDatabase() {
+    setupDatabase(cloud_db_options.db_name)
+    createTable(db_queries.user_table_name, db_queries.user_query)
+}
+
+async function setupDatabase(db_name) {
+    try {
+        // create database and use database
+        await sequelize.query(`CREATE DATABASE IF NOT EXISTS ${db_name};`)
+        await sequelize.query(`USE ${db_name}`)
+        await sequelize.sync({ force: false })
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+async function createTable(table_name, table_query) {
+    try {
+        // create table
+        await sequelize.query(`CREATE TABLE IF NOT EXISTS ${table_name}${table_query}`)
+        await sequelize.sync({ force: false })
+    } catch (err) {
+
+    }
+}
+
 
 
 
 module.exports = {
-    connectToDbCloud
+    connectToDbCloud,
+    setupAndCreateDatabase
 }
