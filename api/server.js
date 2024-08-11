@@ -1,41 +1,40 @@
-const express = require('express')
-const { user_router } = require('./routes/routes_controller')
-const { api_url, cors_option } = require('./config/config')
-const { connectToDbCloud, setupAndCreateDatabase } = require('./db/db_connection')
-const morgan = require('morgan')
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
+const { api_url, cors_option } = require("./config/config");
+const { express, cookie_parser, morgan, cors } = require("./config/node_packages");
+const { user_router } = require("./routes/routes_controller");
 
-
-// Application configuration
+// app config
 const app = express()
 
-// Middleware config
-app.use(morgan('tiny'))
-app.use(cookieParser())
-app.use(cors(cors_option))
+// middleware
+app.use(cookie_parser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(morgan('tiny'))
+app.use(cors(cors_option))
 
-// Route configuration
+/**
+ * LIST OF ROUTES
+ * main api to test the api
+ * user routes
+ * event route
+ * gigs route
+ * service route
+ * gadget route
+ * post route
+ */
 app.get(`${api_url.url}`, (req, res) => {
-    res.json({ message: 'Welcome to MUGIVIES' })
+    res.status(200).json({ message: 'Api is Working' })
 })
 
-// Other routes config
+// user route
 app.use(`${api_url.url}user`, user_router)
 
-
-
-
-// App port listening
+// app port listening
 app.listen(api_url.port, () => {
 
-    // Connect to database cloud when the server start
-    connectToDbCloud()
+    // connect to database
 
-    // Setup database and create tables after connected to the database
-    setupAndCreateDatabase()
+    // setup database and create tables
 
-    console.log(`Api url: http://localhost:${api_url.port}${api_url.url}`)
+    console.log(`listening to ${api_url.port} url: http://localhost:${api_url.port}${api_url.url}`)
 })

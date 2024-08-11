@@ -1,5 +1,4 @@
 const { auth_jwt } = require('../../config/config')
-const bcrypt = require('bcrypt')
 const User = require('../../models/user_model')
 
 // Check if email exist

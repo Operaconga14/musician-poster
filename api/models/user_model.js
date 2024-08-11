@@ -1,5 +1,5 @@
-const { sequelize, db_queries } = require('../config/config')
-const { DataTypes } = require('sequelize')
+const { sequelize, db_queries } = require("../config/config")
+const { DataTypes } = require('../config/node_packages')
 
 const User = sequelize.define(`${db_queries.user_table_name}`, {
     name: {

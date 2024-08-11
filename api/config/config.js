@@ -1,19 +1,11 @@
-const { user_table_query } = require('../db/db_queries')
-const { Sequelize } = require('sequelize')
-const cloudinary = require('cloudinary').v2
-require('dotenv').config()
+const { user_table_query } = require("../db/db_queries")
+const { dotenv, Sequelize, cloudinary } = require("./node_packages")
+dotenv
 
-
-// Server config
-const api_url = {
-    url: process.env.API_URL,
-    port: process.env.PORT
-}
-
+// cors configuration option
 const cors_options = {
     allowed_origin: ['https://musician-poster-frontend.vercel.app', 'http://localhost:4200', '*']
 }
-
 
 const cors_option = {
     origin: (origin, callback) => {
@@ -26,15 +18,13 @@ const cors_option = {
     credentials: true
 }
 
-// Cloudinary config
-cloudinary.config({
-    secure: true,
-    api_key: process.env.CLOUD_APIKEY,
-    api_secret: process.env.CLOUD_SECRET,
-    cloud_name: process.env.CLOUD_NAME,
-})
+// api url and port config option
+const api_url = {
+    url: process.env.API_URL,
+    port: process.env.PORT
+}
 
-// Database cloud config
+// database cloud config
 const cloud_db_options = {
     db_name: process.env.DB_DATABASE,
     db_user: process.env.DB_USERNAME,
@@ -44,7 +34,7 @@ const cloud_db_options = {
     db_connection_limit: process.env.DB_CONNECTION_LIMIT
 }
 
-// Database local config
+// database local config
 const local_db_options = {
     db_name: process.env.DB_NAME,
     db_user: process.env.DB_USER,
@@ -69,7 +59,7 @@ const db_queries = {
     // gigs_query: gigs_table_query
 }
 
-// Cloud sequelize config
+// cloud sequelize config
 const sequelize = new Sequelize(cloud_db_options.db_name, cloud_db_options.db_user, cloud_db_options.db_pass, {
     host: cloud_db_options.db_host,
     dialect: 'mysql',
@@ -79,6 +69,14 @@ const sequelize = new Sequelize(cloud_db_options.db_name, cloud_db_options.db_us
             rejectUnauthorized: false,
         }
     }
+})
+
+// cloudinary config
+cloudinary.config({
+    secure: true,
+    api_key: process.env.CLOUD_APIKEY,
+    api_secret: process.env.CLOUD_SECRET,
+    cloud_name: process.env.CLOUD_NAME,
 })
 
 // jwt authentication config option
@@ -98,14 +96,16 @@ const auth_jwt = {
     default_picture: undefined
 }
 
+const test_img_upload = process.env.DEFAULT_IMG
 
 module.exports = {
     api_url,
-    cloudinary,
     cloud_db_options,
     local_db_options,
     db_queries,
     sequelize,
+    cloudinary,
     auth_jwt,
-    cors_option
+    cors_option,
+    test_img_upload
 }
