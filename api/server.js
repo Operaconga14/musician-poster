@@ -1,5 +1,6 @@
 const { api_url, cors_option } = require("./config/config");
 const { express, cookie_parser, morgan, cors } = require("./config/node_packages");
+const { connectToCloud, setupAndCreateDatabase } = require("./db/db_connection");
 const { user_router } = require("./routes/routes_controller");
 
 // app config
@@ -33,8 +34,10 @@ app.use(`${api_url.url}user`, user_router)
 app.listen(api_url.port, () => {
 
     // connect to database
+    connectToCloud()
 
     // setup database and create tables
+    setupAndCreateDatabase()
 
     console.log(`listening to ${api_url.port} url: http://localhost:${api_url.port}${api_url.url}`)
 })

@@ -101,6 +101,11 @@ const test_img_upload = process.env.DEFAULT_IMG
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
+const date_option = {
+    options: undefined,
+    now: undefined,
+    formatted_date: undefined
+}
 
 module.exports = {
     api_url,
@@ -112,5 +117,6 @@ module.exports = {
     auth_jwt,
     cors_option,
     test_img_upload,
-    upload
+    upload,
+    date_option
 }

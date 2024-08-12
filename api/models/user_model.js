@@ -26,6 +26,33 @@ const User = sequelize.define(`${db_queries.user_table_name}`, {
         type: DataTypes.STRING,
         allowNull: false
     },
+    contact: {
+        type: DataTypes.STRING
+    },
+    facebook: {
+        type: DataTypes.STRING
+    },
+    instagram: {
+        type: DataTypes.STRING
+    },
+    youtube: {
+        type: DataTypes.STRING
+    },
+    audiomack: {
+        type: DataTypes.STRING
+    },
+    tiktok: {
+        type: DataTypes.STRING
+    },
+    boomplay: {
+        type: DataTypes.STRING
+    },
+    applemusic: {
+        type: DataTypes.STRING
+    },
+    spotify: {
+        type: DataTypes.STRING
+    },
     createdAt: {
         type: DataTypes.DATE
     },

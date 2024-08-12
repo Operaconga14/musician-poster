@@ -1,6 +1,5 @@
-const { Op } = require("sequelize")
 const { auth_jwt, upload } = require("../../config/config")
-const { express, bcrypt, jwt, cookie_parser, Readable, cloudinary } = require("../../config/node_packages")
+const { express, bcrypt, jwt, cookie_parser, Readable, cloudinary, Op } = require("../../config/node_packages")
 const { authenticate_user } = require("../../helper/jwt")
 const User = require("../../models/user_model")
 const { checkIfEmailExists } = require("./user_controller")
@@ -11,7 +10,7 @@ router.use(cookie_parser())
 
 // testing route
 router.get(`/`, (req, res) => {
-    res.json({ message: 'User Api working' })
+    return res.status(200).json({ message: 'User Api working' })
 })
 
 // register route
@@ -35,12 +34,12 @@ router.post('/auth/register', async (req, res) => {
 
                 // register user and ave it into the database
                 auth_jwt.user = await User.create({ name: name, email: email, username: username, role: role, picture: auth_jwt.default_picture, password: auth_jwt.hashed_password, createdAt: Date.now(), updatedAt: Date.now() })
-                res.status(201).json({ message: 'Registration successful', user: auth_jwt.user })
+                return res.status(201).json({ message: 'Registration successful' })
 
             })
 
     } catch (err) {
-        res.status(500).json({ message: 'Database error', err })
+        return res.status(500).json({ message: 'Database error', err })
     }
 })
 
@@ -78,10 +77,10 @@ router.post('/auth/login', async (req, res) => {
         })
 
         // return success with token details
-        res.status(201).json({ message: 'Login successful', token: auth_jwt.token })
+        return res.status(201).json({ message: 'Login successful', token: auth_jwt.token })
 
     } catch (err) {
-        res.status(500).json({ message: 'Database error', err })
+        return res.status(500).json({ message: 'Database error', err })
     }
 })
 
@@ -91,19 +90,19 @@ router.get('/me', authenticate_user, async (req, res) => {
         const email = req.user.email
         auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
         if (!auth_jwt.user) {
-            res.status(404).json({ message: 'User not found' })
+            return res.status(404).json({ message: 'User not found' })
         }
 
         // show user details
-        res.json({ message: { user: auth_jwt.user } })
+        return res.json({ message: { user: auth_jwt.user } })
 
     } catch (err) {
-        res.status(500).json({ message: 'Database error', err })
+        return res.status(500).json({ message: 'Database error', err })
     }
 })
 
 // upload profile image
-router.post('/picture', authenticate_user, upload.single('picture'), async (req, res) => {
+router.put('/picture', authenticate_user, upload.single('picture'), async (req, res) => {
     // const picture = req.file
     try {
         if (!req.file) {
@@ -114,7 +113,7 @@ router.post('/picture', authenticate_user, upload.single('picture'), async (req,
         const email = req.user.email
         auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
         if (!auth_jwt.user) {
-            res.status(404).json({ message: 'User not found' })
+            return res.status(404).json({ message: 'User not found' })
         }
 
         // Convert the buffer to a readable stream
@@ -137,13 +136,42 @@ router.post('/picture', authenticate_user, upload.single('picture'), async (req,
 
         // store the image to the database profile picture
         auth_jwt.user = await User.update({ picture: cloudinaryResponse.secure_url, updatedAt: Date.now() }, { where: { email: email } })
-        res.json({ message: 'Profile image uploaded successfully' })
+        return res.json({ message: 'Profile image uploaded successfully' })
 
     } catch (err) {
-        res.status(500).json({ message: `Cloudinary or database Error`, err })
+        return res.status(500).json({ message: `Cloudinary or database Error`, err })
     }
 })
 
-// // update user info
+// update user info
+router.put('/me/update', authenticate_user, async (req, res) => {
+    const userIdentifier = req.user.email || req.user.username
+    const {
+        facebook, instagram, youtube, audiomack, tiktok,
+        boomplay, applemusic, spotify, contact, role } = req.body
+
+    try {
+        // first of all find the user
+        auth_jwt.user = await User.findOne({ where: { email: userIdentifier }, attributes: { exclude: ['password', 'id'] } })
+        if (!auth_jwt.user) {
+            return res.status(404).json({ message: 'User not found' })
+        }
+
+        // update user info
+        auth_jwt.user = await User.update({
+            facebook: facebook, instagram: instagram, youtube: youtube,
+            audiomack: audiomack, tiktok: tiktok, boomplay: boomplay,
+            applemusic: applemusic, spotify: spotify, contact: contact, role: role
+        },
+            {
+                where: { [Op.or]: [{ email: userIdentifier }, { username: userIdentifier }] }
+            })
+        return res.status(201).json({ message: 'User updated successfully' })
+
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({ message: 'Database error', err })
+    }
+})
 
 module.exports = router

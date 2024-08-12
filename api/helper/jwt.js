@@ -13,11 +13,6 @@ const authenticate_user = (req, res, next) => {
     });
 }
 
-// update user
-// async function updateUser(params) {
-
-// }
-
 module.exports = {
     authenticate_user
 }

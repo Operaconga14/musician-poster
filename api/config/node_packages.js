@@ -15,6 +15,8 @@ const { DataTypes } = require('sequelize')
 const multer = require('multer')
 const fs = require('fs')
 const { Readable } = require('stream')
+const moment = require('moment')
+const { Op } = require('sequelize')
 
 module.exports = {
     bcrypt,
@@ -32,5 +34,7 @@ module.exports = {
     DataTypes,
     multer,
     fs,
-    Readable
+    Readable,
+    moment,
+    Op
 }
