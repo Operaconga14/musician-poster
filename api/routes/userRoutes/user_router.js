@@ -1,6 +1,6 @@
 const { Op } = require("sequelize")
-const { auth_jwt, test_img_upload, upload } = require("../../config/config")
-const { express, bcrypt, jwt, cookie_parser, cloudinary, fs } = require("../../config/node_packages")
+const { auth_jwt, upload } = require("../../config/config")
+const { express, bcrypt, jwt, cookie_parser, Readable, cloudinary } = require("../../config/node_packages")
 const { authenticate_user } = require("../../helper/jwt")
 const User = require("../../models/user_model")
 const { checkIfEmailExists } = require("./user_controller")
@@ -45,6 +45,7 @@ router.post('/auth/register', async (req, res) => {
 router.post('/auth/login', async (req, res) => {
     const { email, password } = req.body
     try {
+
         // check if there is any email requested in the database
         auth_jwt.user = await User.findOne({
             where: { email: email }, attributes: {
@@ -97,22 +98,40 @@ router.get('/me', authenticate_user, async (req, res) => {
 router.post('/picture', authenticate_user, upload.single('picture'), async (req, res) => {
     // const picture = req.file
     try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        // check if the user has a record in the database
         const email = req.user.email
         auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
         if (!auth_jwt.user) {
             res.status(404).json({ message: 'User not found' })
-        } else {
-            // upload image to cloudinary and return image url as string
-            const profile_picture = await cloudinary.uploader.upload(req.file.path, {
-                folder: 'profile-image'
-            })
-            // remove the file from uploads
-            fs.unlinkSync(req.file.path)
-            // store the image to the database profile picture
-            auth_jwt.user = await User.update({ picture: profile_picture.secure_url }, { where: { email: email } })
-            res.json({ message: 'Profile image uploaded successfully' })
-
         }
+
+        // Convert the buffer to a readable stream
+        const readStream = new Readable()
+        readStream.push(req.file.buffer)
+        readStream.push(null)
+
+        // Upload image to Cloudinary directly from the buffer
+        const cloudinaryResponse = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                { folder: 'profile-image' },
+                (error, result) => {
+                    if (error) reject(error)
+                    else resolve(result)
+                }
+            )
+
+            readStream.pipe(uploadStream)
+        })
+
+
+        // store the image to the database profile picture
+        auth_jwt.user = await User.update({ picture: cloudinaryResponse.secure_url, updatedAt: Date.now() }, { where: { email: email } })
+        res.json({ message: 'Profile image uploaded successfully' })
+
     } catch (err) {
         console.error(err)
         res.status(500).json({ message: `Cloudinary or database Error`, err })

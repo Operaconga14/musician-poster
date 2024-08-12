@@ -14,6 +14,7 @@ const mariadb = require('mariadb')
 const { DataTypes } = require('sequelize')
 const multer = require('multer')
 const fs = require('fs')
+const { Readable } = require('stream')
 
 module.exports = {
     bcrypt,
@@ -30,5 +31,6 @@ module.exports = {
     mariadb,
     DataTypes,
     multer,
-    fs
+    fs,
+    Readable
 }

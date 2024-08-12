@@ -98,7 +98,8 @@ const auth_jwt = {
 
 const test_img_upload = process.env.DEFAULT_IMG
 
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
 
 
 module.exports = {
