@@ -9,6 +9,7 @@ const mysql = mysql2.createConnection({
     user: cloud_db_options.db_user,
     password: cloud_db_options.db_pass,
     connectionLimit: cloud_db_options.db_connection_limit,
+    connectTimeout: 600000,
     ssl: {
         rejectUnauthorized: false
     }
