@@ -1,6 +1,6 @@
 const { Op } = require("sequelize")
-const { auth_jwt, test_img_upload } = require("../../config/config")
-const { express, bcrypt, jwt, cookie_parser, cloudinary } = require("../../config/node_packages")
+const { auth_jwt, test_img_upload, upload } = require("../../config/config")
+const { express, bcrypt, jwt, cookie_parser, cloudinary, fs } = require("../../config/node_packages")
 const { authenticate_user } = require("../../helper/jwt")
 const User = require("../../models/user_model")
 const { checkIfEmailExists } = require("./user_controller")
@@ -94,8 +94,8 @@ router.get('/me', authenticate_user, async (req, res) => {
 })
 
 // upload profile image
-router.post('/picture', authenticate_user, async (req, res) => {
-    const picture = req.body
+router.post('/picture', authenticate_user, upload.single('picture'), async (req, res) => {
+    // const picture = req.file
     try {
         const email = req.user.email
         auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
@@ -103,14 +103,19 @@ router.post('/picture', authenticate_user, async (req, res) => {
             res.status(404).json({ message: 'User not found' })
         } else {
             // upload image to cloudinary and return image url as string
-            const profile_picture = await cloudinary.uploader.upload(picture, {
+            const profile_picture = await cloudinary.uploader.upload(req.file.path, {
                 folder: 'profile-image'
             })
-            res.json({ message: { url: profile_picture.secure_url } })
-            // auth_jwt.user = await User.update({})
+            // remove the file from uploads
+            fs.unlinkSync(req.file.path)
+            // store the image to the database profile picture
+            auth_jwt.user = await User.update({ picture: profile_picture.secure_url }, { where: { email: email } })
+            res.json({ message: 'Profile image uploaded successfully' })
+
         }
     } catch (err) {
-        res.status(500).json({ message: `Cloudinary Error`, err })
+        console.error(err)
+        res.status(500).json({ message: `Cloudinary or database Error`, err })
     }
 })
 

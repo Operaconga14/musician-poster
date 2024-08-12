@@ -12,7 +12,8 @@ const mysql2 = require('mysql2')
 const dotenv = require('dotenv').config()
 const mariadb = require('mariadb')
 const { DataTypes } = require('sequelize')
-
+const multer = require('multer')
+const fs = require('fs')
 
 module.exports = {
     bcrypt,
@@ -27,5 +28,7 @@ module.exports = {
     dotenv,
     body_parser,
     mariadb,
-    DataTypes
+    DataTypes,
+    multer,
+    fs
 }

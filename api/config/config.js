@@ -1,5 +1,5 @@
 const { user_table_query } = require("../db/db_queries")
-const { dotenv, Sequelize, cloudinary } = require("./node_packages")
+const { dotenv, Sequelize, cloudinary, multer } = require("./node_packages")
 dotenv
 
 // cors configuration option
@@ -98,6 +98,9 @@ const auth_jwt = {
 
 const test_img_upload = process.env.DEFAULT_IMG
 
+const upload = multer({ dest: 'uploads/' })
+
+
 module.exports = {
     api_url,
     cloud_db_options,
@@ -107,5 +110,6 @@ module.exports = {
     cloudinary,
     auth_jwt,
     cors_option,
-    test_img_upload
+    test_img_upload,
+    upload
 }
