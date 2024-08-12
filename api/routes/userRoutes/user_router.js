@@ -93,6 +93,27 @@ router.get('/me', authenticate_user, async (req, res) => {
     }
 })
 
+// upload profile image
+router.post('/picture', authenticate_user, async (req, res) => {
+    const picture = req.body
+    try {
+        const email = req.user.email
+        auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
+        if (!auth_jwt.user) {
+            res.status(404).json({ message: 'User not found' })
+        } else {
+            // upload image to cloudinary and return image url as string
+            const profile_picture = await cloudinary.uploader.upload(picture, {
+                folder: 'profile-image'
+            })
+            res.json({ message: { url: profile_picture.secure_url } })
+            // auth_jwt.user = await User.update({})
+        }
+    } catch (err) {
+        res.status(500).json({ message: `Cloudinary Error`, err })
+    }
+})
+
 // // update user info
 // router.put('/me/update', authenticate_user, async (req, res) => {
 //     const userIdentifier = req.user.email || req.user.username
