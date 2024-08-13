@@ -1,10 +1,11 @@
-const { multipart_form } = require("../../config/config")
-const { router, body_parser } = require("../../config/node_packages")
+const { multipart_form, cors_option } = require("../../config/config")
+const { router, body_parser, cors } = require("../../config/node_packages")
 const { authenticate_user } = require('../../helper/jwt')
 const Event = require("../../models/event_model")
 
 // middleware config
 router.use(body_parser.urlencoded({ extended: true }))
+router.use(cors(cors_option))
 
 // test event api
 router.get('/', (req, res) => {

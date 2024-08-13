@@ -1,5 +1,5 @@
-const { auth_jwt, upload } = require("../../config/config")
-const { express, bcrypt, jwt, cookie_parser, Readable, cloudinary, Op } = require("../../config/node_packages")
+const { auth_jwt, upload, cors_option } = require("../../config/config")
+const { express, bcrypt, jwt, cookie_parser, Readable, cloudinary, Op, cors } = require("../../config/node_packages")
 const { authenticate_user } = require("../../helper/jwt")
 const User = require("../../models/user_model")
 const { checkIfEmailExists } = require("./user_controller")
@@ -7,6 +7,7 @@ const router = express.Router()
 
 // middleware config
 router.use(cookie_parser())
+router.use(cors(cors_option))
 
 // testing route
 router.get(`/`, (req, res) => {

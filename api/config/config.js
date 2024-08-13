@@ -4,7 +4,7 @@ dotenv
 
 // cors configuration option
 const cors_options = {
-    allowed_origin: ['*']
+    allowed_origin: ['https://mugivies.vercel.app/', 'http://localhost:4200/', '*']
 }
 
 const cors_option = {
