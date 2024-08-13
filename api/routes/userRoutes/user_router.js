@@ -71,7 +71,7 @@ router.post('/auth/login', async (req, res) => {
 
         // store token in encrypted cookies
         res.cookie('token', auth_jwt.token, {
-            httpOnly: true, // Prevents JavaScript from accessing the token
+            // httpOnly: true, // Prevents JavaScript from accessing the token
             secure: true,   // Ensure the cookie is only sent over HTTPS
             sameSite: 'strict', // Adjust for cross-site requests if needed
             maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
