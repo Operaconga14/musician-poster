@@ -1,6 +1,6 @@
 const { auth_jwt, upload, cors_option } = require("../../config/config")
 const { express, bcrypt, jwt, cookie_parser, Readable, cloudinary, Op, cors } = require("../../config/node_packages")
-const { authenticate_user } = require("../../helper/jwt")
+const { authenticate_user, authenticateToken } = require("../../helper/jwt")
 const User = require("../../models/user_model")
 const { checkIfEmailExists } = require("./user_controller")
 const router = express.Router()
@@ -72,8 +72,8 @@ router.post('/auth/login', async (req, res) => {
         // store token in encrypted cookies
         res.cookie('token', auth_jwt.token, {
             httpOnly: true, // Prevents JavaScript from accessing the token
-            secure: true,   // Ensure the cookie is only sent over HTTPS
-            sameSite: 'strict', // Adjust for cross-site requests if needed
+            secure: process.env.NODE_ENV === 'production',   // Ensure the cookie is only sent over HTTPS and Set to true in production
+            sameSite: 'None', // Adjust for cross-site requests if needed
             maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
         })
 
