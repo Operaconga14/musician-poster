@@ -66,19 +66,19 @@ router.post('/auth/login', async (req, res) => {
         }
 
         // generate and verify generated token
-        auth_jwt.payload = ({ email: auth_jwt.user.email } || { username: auth_jwt.user.username })
+        auth_jwt.payload = ({ email: auth_jwt.user.email })
         auth_jwt.token = await jwt.sign(auth_jwt.payload, auth_jwt.secret, { expiresIn: '1d' })
 
         // store token in encrypted cookies
         res.cookie('token', auth_jwt.token, {
-            // httpOnly: true, // Prevents JavaScript from accessing the token
+            httpOnly: true, // Prevents JavaScript from accessing the token
             secure: true,   // Ensure the cookie is only sent over HTTPS
             sameSite: 'strict', // Adjust for cross-site requests if needed
             maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
         })
 
         // return success with token details
-        return res.status(201).json({ message: 'Login successful', token: auth_jwt.token })
+        res.status(201).json({ message: 'Login successful', token: auth_jwt.token })
 
     } catch (err) {
         return res.status(500).json({ message: 'Database error', err })
@@ -88,14 +88,14 @@ router.post('/auth/login', async (req, res) => {
 // get user profile
 router.get('/me', authenticate_user, async (req, res) => {
     try {
-        const userIdentifier = req.user.email || req.user.username
-        auth_jwt.user = await User.findOne({ where: { email: userIdentifier } || { username: userIdentifier }, attributes: { exclude: ['password', 'id'] } })
+        const email = req.user.email
+        auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
         if (!auth_jwt.user) {
             return res.status(404).json({ message: 'User not found' })
         }
 
         // show user details
-        return res.json({ message: { user: auth_jwt.user } })
+        res.status(201).json({ user: auth_jwt.user })
 
     } catch (err) {
         console.error(err)
@@ -147,14 +147,14 @@ router.put('/picture', authenticate_user, upload.single('picture'), async (req, 
 
 // update user info
 router.put('/me/update', authenticate_user, async (req, res) => {
-    const userIdentifier = req.user.email || req.user.username
+    const email = req.user.email
     const {
         facebook, instagram, youtube, audiomack, tiktok,
         boomplay, applemusic, spotify, contact, role } = req.body
 
     try {
         // first of all find the user
-        auth_jwt.user = await User.findOne({ where: { email: userIdentifier }, attributes: { exclude: ['password', 'id'] } })
+        auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
         if (!auth_jwt.user) {
             return res.status(404).json({ message: 'User not found' })
         }
@@ -165,9 +165,8 @@ router.put('/me/update', authenticate_user, async (req, res) => {
             audiomack: audiomack, tiktok: tiktok, boomplay: boomplay,
             applemusic: applemusic, spotify: spotify, contact: contact, role: role
         },
-            {
-                where: { [Op.or]: [{ email: userIdentifier }, { username: userIdentifier }] }
-            })
+            { where: { email: email } }
+        )
         return res.status(201).json({ message: 'User updated successfully' })
 
     } catch (err) {
