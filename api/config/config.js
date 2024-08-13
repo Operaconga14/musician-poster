@@ -1,4 +1,4 @@
-const { user_table_query } = require("../db/db_queries")
+const { user_table_query, event_table_query } = require("../db/db_queries")
 const { dotenv, Sequelize, cloudinary, multer } = require("./node_packages")
 dotenv
 
@@ -46,9 +46,9 @@ const local_db_options = {
 const db_queries = {
     user_table_name: 'users',
     user_query: user_table_query,
-    default_image: process.env.DEFAULT_PROFILE_PICTURE
-    // events_table_name: 'events',
-    // events_query: events_table_query,
+    default_image: process.env.DEFAULT_PROFILE_PICTURE,
+    event_table_name: 'events',
+    event_query: event_table_query,
     // gadget_table_name: 'gadgets',
     // gadget_query: gadget_table_query,
     // post_table_name: 'posts',
@@ -100,6 +100,7 @@ const test_img_upload = process.env.DEFAULT_IMG
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
+const multipart_form = multer()
 
 const date_option = {
     options: undefined,
@@ -118,5 +119,6 @@ module.exports = {
     cors_option,
     test_img_upload,
     upload,
-    date_option
+    date_option,
+    multipart_form
 }

@@ -60,7 +60,6 @@ const User = sequelize.define(`${db_queries.user_table_name}`, {
         type: DataTypes.DATE
     }
 }, {
-    tableName: db_queries.user_table_name,
     timestamps: false
 })
 

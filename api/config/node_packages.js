@@ -17,6 +17,7 @@ const fs = require('fs')
 const { Readable } = require('stream')
 const moment = require('moment')
 const { Op } = require('sequelize')
+const router = express.Router()
 
 module.exports = {
     bcrypt,
@@ -36,5 +37,6 @@ module.exports = {
     fs,
     Readable,
     moment,
-    Op
+    Op,
+    router
 }

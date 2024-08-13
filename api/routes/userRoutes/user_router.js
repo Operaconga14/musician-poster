@@ -65,7 +65,7 @@ router.post('/auth/login', async (req, res) => {
         }
 
         // generate and verify generated token
-        auth_jwt.payload = ({ email: auth_jwt.user.email })
+        auth_jwt.payload = ({ email: auth_jwt.user.email } && { username: auth_jwt.user.username })
         auth_jwt.token = await jwt.sign(auth_jwt.payload, auth_jwt.secret, { expiresIn: '1d' })
 
         // store token in encrypted cookies
@@ -169,7 +169,6 @@ router.put('/me/update', authenticate_user, async (req, res) => {
         return res.status(201).json({ message: 'User updated successfully' })
 
     } catch (err) {
-        console.error(err)
         return res.status(500).json({ message: 'Database error', err })
     }
 })

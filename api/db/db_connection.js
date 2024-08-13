@@ -33,6 +33,9 @@ function setupAndCreateDatabase() {
 
     // create user table
     createTable(db_queries.user_table_name, db_queries.user_query)
+
+    // create event table
+    createTable(db_queries.event_table_name, db_queries.event_query)
 }
 
 // setup database name

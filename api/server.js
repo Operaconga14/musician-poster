@@ -1,7 +1,7 @@
 const { api_url, cors_option } = require("./config/config");
 const { express, cookie_parser, morgan, cors } = require("./config/node_packages");
 const { connectToCloud, setupAndCreateDatabase } = require("./db/db_connection");
-const { user_router } = require("./routes/routes_controller");
+const { user_router, event_router } = require("./routes/routes_controller");
 
 // app config
 const app = express()
@@ -29,6 +29,9 @@ app.get(`${api_url.url}`, (req, res) => {
 
 // user route
 app.use(`${api_url.url}user`, user_router)
+
+// event route
+app.use(`${api_url.url}event`, event_router)
 
 // app port listening
 app.listen(api_url.port, () => {

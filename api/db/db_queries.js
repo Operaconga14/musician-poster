@@ -20,6 +20,18 @@ const user_table_query = `(
     updatedAt DATE
 )`
 
+// events query
+const event_table_query = `(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title varchar(100) NOT NULL,
+    description varchar(100) NOT NULL,
+    username varchar(100),
+    createdAt DATE,
+    updatedAt DATE
+)`
+
+
 module.exports = {
-    user_table_query
+    user_table_query,
+    event_table_query
 }
