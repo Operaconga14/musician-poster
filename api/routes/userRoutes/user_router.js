@@ -66,7 +66,7 @@ router.post('/auth/login', async (req, res) => {
         }
 
         // generate and verify generated token
-        auth_jwt.payload = ({ email: auth_jwt.user.email } && { username: auth_jwt.user.username })
+        auth_jwt.payload = ({ email: auth_jwt.user.email } || { username: auth_jwt.user.username })
         auth_jwt.token = await jwt.sign(auth_jwt.payload, auth_jwt.secret, { expiresIn: '1d' })
 
         // store token in encrypted cookies
@@ -88,8 +88,8 @@ router.post('/auth/login', async (req, res) => {
 // get user profile
 router.get('/me', authenticate_user, async (req, res) => {
     try {
-        const email = req.user.email
-        auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
+        const userIdentifier = req.user.email || req.user.username
+        auth_jwt.user = await User.findOne({ where: { email: userIdentifier } || { username: userIdentifier }, attributes: { exclude: ['password', 'id'] } })
         if (!auth_jwt.user) {
             return res.status(404).json({ message: 'User not found' })
         }
@@ -98,6 +98,7 @@ router.get('/me', authenticate_user, async (req, res) => {
         return res.json({ message: { user: auth_jwt.user } })
 
     } catch (err) {
+        console.error(err)
         return res.status(500).json({ message: 'Database error', err })
     }
 })
