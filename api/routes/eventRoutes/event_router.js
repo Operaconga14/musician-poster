@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 // get all event api
 router.get('/events', async (req, res) => {
     try {
-        const events = await Event.findAll()
+        const events = await Event.findAll({ attributes: { exclude: ['id'] } })
         if (!events) {
             return res.status(404).json({ message: 'No events found chack back later' })
         }
@@ -26,11 +26,24 @@ router.get('/events', async (req, res) => {
 
 })
 
+// get event by id api
+router.get('/event/:id', async (req, res) => {
+    const event_id = req.params.id
+    try {
+        const event = await Event.findByPk(event_id, { attributes: { exclude: ['id'] } })
+        if (!event) {
+            return res.status(404).json({ message: 'No events found chack back later' })
+        }
+        return res.status(201).json({ event: event })
+    } catch (err) {
+        return res.status(501).json({ message: 'Database error', err })
+    }
 
+})
 
 // post event route
 router.post('/create', authenticate_user, multipart_form.any(), async (req, res) => {
-    const username = req.user.username
+    const email = req.user.email
     const { title, description, } = req.body
     console.log('Bosy Restfsfsgf', req.body)
     try {
@@ -38,7 +51,7 @@ router.post('/create', authenticate_user, multipart_form.any(), async (req, res)
         const event = await new Event({
             title: title,
             description: description,
-            username: username,
+            username: email,
             createdAt: Date.now(),
             updatedAt: Date.now()
         })
@@ -47,6 +60,52 @@ router.post('/create', authenticate_user, multipart_form.any(), async (req, res)
         event.save()
 
         return res.status(201).json({ message: 'Event created successfully', event })
+    } catch (err) {
+        console.error(err)
+        return res.status(501).json({ message: 'Database error', err })
+    }
+})
+
+// update event route
+router.put('/update/:id', authenticate_user, async (req, res) => {
+    const email = req.user.email
+    const event_id = req.params.id
+    try {
+        const { title, description } = req.body
+        // check user existence
+        const event = await Event.findByPk(event_id)
+        if (!event) {
+            return res.status(404).json({ message: 'No events found or you have not created the requested event' })
+        }
+        // check user existence
+        event.update({
+            title: title,
+            description: description,
+            username: email,
+            updatedAt: Date.now()
+        })
+
+        return res.status(201).json({ message: 'Event updatetd successfully', event })
+
+    } catch (err) {
+        console.error(err)
+        return res.status(501).json({ message: 'Database error', err })
+    }
+})
+
+// delete event route
+router.delete('/delete/:id', authenticate_user, async (req, res) => {
+    const event_id = req.params.id
+    try {
+        // check user existence
+        const event = await Event.findByPk(event_id)
+        if (!event) {
+            return res.status(404).json({ message: 'No events found or you have not created the requested event' })
+        }
+        // check user existence
+        event.destroy({ where: { id: event_id } })
+        return res.status(201).json({ message: 'Event deleted successfully' })
+
     } catch (err) {
         console.error(err)
         return res.status(501).json({ message: 'Database error', err })

@@ -174,4 +174,32 @@ router.put('/me/update', authenticate_user, async (req, res) => {
     }
 })
 
+// delete account
+router.delete('/delete', authenticate_user, async (req, res) => {
+    const email = req.user.email
+    try {
+        // first of all find the user
+        auth_jwt.user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'id'] } })
+        if (!auth_jwt.user) {
+            return res.status(404).json({ message: 'User not found' })
+        }
+
+        auth_jwt.user = await User.destroy({ where: { email: email } })
+        return res.status(201).json({ message: 'Account Deleted successfully' })
+
+    } catch (err) {
+        return res.status(500).json({ message: 'Database error', err })
+    }
+})
+
+router.post('/logout', authenticate_user, async (req, res) => {
+
+    try {
+        res.clearCookie('token', auth_jwt.token)
+        return res.status(201).json({ message: 'logged out successfully' })
+    } catch (err) {
+        return res.status(500).json({ message: 'Database error', err })
+    }
+})
+
 module.exports = router
