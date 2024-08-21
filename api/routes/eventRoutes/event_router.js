@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 // get all event api
 router.get('/events', async (req, res) => {
     try {
-        const events = await Event.findAll({ attributes: { exclude: ['id'] } })
+        const events = await Event.findAll()
         if (!events) {
             return res.status(404).json({ message: 'No events found chack back later' })
         }
@@ -111,6 +111,5 @@ router.delete('/delete/:id', authenticate_user, async (req, res) => {
         return res.status(501).json({ message: 'Database error', err })
     }
 })
-
 
 module.exports = router
