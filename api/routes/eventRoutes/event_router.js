@@ -23,8 +23,17 @@ router.get('/events', async (req, res) => {
     } catch (err) {
         return res.status(501).json({ message: 'Database error', err })
     }
-
 })
+
+// get events by category
+// router.get('/events/', async (req, res) => {
+//     const category = req.body
+//     try {
+//         const event = await Event.findAll({where: cast})
+//     } catch (error) {
+
+//     }
+// })
 
 // get event by id api
 router.get('/event/:id', async (req, res) => {
@@ -35,17 +44,16 @@ router.get('/event/:id', async (req, res) => {
             return res.status(404).json({ message: 'No events found chack back later' })
         }
         return res.status(201).json({ event: event })
+
     } catch (err) {
         return res.status(501).json({ message: 'Database error', err })
     }
-
 })
 
 // post event route
 router.post('/create', authenticate_user, multipart_form.any(), async (req, res) => {
     const email = req.user.email
     const { title, description, } = req.body
-    console.log('Bosy Restfsfsgf', req.body)
     try {
         // check user existence
         const event = await new Event({
@@ -55,13 +63,11 @@ router.post('/create', authenticate_user, multipart_form.any(), async (req, res)
             createdAt: Date.now(),
             updatedAt: Date.now()
         })
-
         // save the details into database
         event.save()
-
         return res.status(201).json({ message: 'Event created successfully', event })
+
     } catch (err) {
-        console.error(err)
         return res.status(501).json({ message: 'Database error', err })
     }
 })
@@ -84,11 +90,9 @@ router.put('/update/:id', authenticate_user, async (req, res) => {
             username: email,
             updatedAt: Date.now()
         })
-
         return res.status(201).json({ message: 'Event updatetd successfully', event })
 
     } catch (err) {
-        console.error(err)
         return res.status(501).json({ message: 'Database error', err })
     }
 })
@@ -107,7 +111,6 @@ router.delete('/delete/:id', authenticate_user, async (req, res) => {
         return res.status(201).json({ message: 'Event deleted successfully' })
 
     } catch (err) {
-        console.error(err)
         return res.status(501).json({ message: 'Database error', err })
     }
 })
