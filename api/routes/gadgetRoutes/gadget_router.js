@@ -1,6 +1,5 @@
-const { express } = require("../../config/node_packages");
+const { router } = require("../../config/node_packages");
 
-const router = express.Router()
 
 // test gadget route
 router.get('', (req, res) => {

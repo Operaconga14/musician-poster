@@ -29,13 +29,16 @@ async function connectToCloud() {
 
 // setup database and create tables
 function setupAndCreateDatabase() {
+    // create database and use database
     setupDatabase(cloud_db_options.db_name)
-
     // create user table
     createTable(db_queries.user_table_name, db_queries.user_query)
-
     // create event table
     createTable(db_queries.event_table_name, db_queries.event_query)
+    // create gig table
+    createTable(db_queries.gigs_table_name, db_queries.gigs_query)
+    // create vacancy table
+    createTable(db_queries.vacancy_table_name, db_queries.vacancy_query)
 }
 
 // setup database name

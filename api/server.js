@@ -1,7 +1,7 @@
 const { api_url, cors_option } = require("./config/config");
 const { express, cookie_parser, morgan, cors } = require("./config/node_packages");
 const { connectToCloud, setupAndCreateDatabase } = require("./db/db_connection");
-const { user_router, event_router, gig_router, service_router, post_router, gadget_router } = require("./routes/routes_controller");
+const { user_router, event_router, gig_router, service_router, post_router, gadget_router, vacancy_router } = require("./routes/routes_controller");
 
 // app config
 const app = express()
@@ -18,10 +18,11 @@ app.use(cors(cors_option))
  * main api to test the api
  * user routes => done not completed
  * event route => done  not completed
- * gigs route =>
+ * gigs route => done not completed
  * service route =>
  * gadget route =>
  * post route =>
+ * vaccancies route =>
  */
 app.get(`${api_url.url}`, (req, res) => {
     res.status(200).json({ message: 'Api is Working' })
@@ -39,7 +40,8 @@ app.use(`${api_url.url}service`, service_router)
 app.use(`${api_url.url}post`, post_router)
 // service route
 app.use(`${api_url.url}gadget`, gadget_router)
-
+// vacancy route
+app.use(`${api_url.url}vacancy`, vacancy_router)
 // app port listening
 app.listen(api_url.port, () => {
     // connect to database

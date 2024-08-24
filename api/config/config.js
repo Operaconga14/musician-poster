@@ -1,4 +1,4 @@
-const { user_table_query, event_table_query } = require("../db/db_queries")
+const { user_table_query, event_table_query, gig_table_query, vacancies_table_query } = require("../db/db_queries")
 const { dotenv, Sequelize, cloudinary, multer } = require("./node_packages")
 dotenv
 
@@ -55,8 +55,10 @@ const db_queries = {
     // post_query: post_table_query,
     // services_table_name: 'services',
     // services_query: services_table_query,
-    // gigs_table_name: 'gigs',
-    // gigs_query: gigs_table_query
+    gigs_table_name: 'gigs',
+    gigs_query: gig_table_query,
+    vacancy_table_name: 'vacancies',
+    vacancy_query: vacancies_table_query
 }
 
 // cloud sequelize config
@@ -68,6 +70,9 @@ const sequelize = new Sequelize(cloud_db_options.db_name, cloud_db_options.db_us
         ssl: {
             rejectUnauthorized: false,
         }
+    },
+    retry: {
+        max: 3
     }
 })
 

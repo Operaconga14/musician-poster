@@ -18,6 +18,7 @@ const { Readable } = require('stream')
 const moment = require('moment')
 const { Op } = require('sequelize')
 const router = express.Router()
+const cron = require('node-cron')
 
 module.exports = {
     bcrypt,
@@ -38,5 +39,6 @@ module.exports = {
     Readable,
     moment,
     Op,
-    router
+    router,
+    cron
 }

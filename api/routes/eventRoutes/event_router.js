@@ -1,5 +1,5 @@
 const { multipart_form, cors_option } = require("../../config/config")
-const { router, body_parser, cors } = require("../../config/node_packages")
+const { router, body_parser, cors, cron, Op } = require("../../config/node_packages")
 const { authenticate_user } = require('../../helper/jwt')
 const Event = require("../../models/event_model")
 
@@ -11,6 +11,22 @@ router.use(cors(cors_option))
 router.get('/', (req, res) => {
     return res.status(200).json({ message: 'Event route is working' })
 })
+
+// cron job
+// cron.schedule('0 0 * * *', async () => {
+//     try {
+//         const currentDate = new Date()
+
+//         // delete evnts if the event date has passed
+//         const deletedEventCount = await Event.destroy({
+//             where: {
+
+//             }
+//         })
+//     } catch (error) {
+//         console.error('Error deleting outdated events:', error);
+//     }
+// })
 
 // get all event api
 router.get('/events', async (req, res) => {
@@ -36,10 +52,27 @@ router.get('/events', async (req, res) => {
 // })
 
 // get event by id api
+router.get('/newevents', async (req, res) => {
+    const aWeeekAgo = new Date()
+    aWeeekAgo.setDate(aWeeekAgo.getDay() - 7)
+    try {
+        const event = await Event.findAll({ where: { createdAt: { [Op.gte]: aWeeekAgo } }, limit: 10 })
+        if (!event || event.length === 0) {
+            return res.status(404).json({ message: 'No new events found chack back later' })
+        }
+        return res.status(201).json({ event: event })
+
+    } catch (err) {
+        console.error(err)
+        return res.status(501).json({ message: 'Database error', err })
+    }
+})
+
+// get event by id api
 router.get('/event/:id', async (req, res) => {
     const event_id = req.params.id
     try {
-        const event = await Event.findByPk(event_id, { attributes: { exclude: ['id'] } })
+        const event = await Event.findByPk(event_id)
         if (!event) {
             return res.status(404).json({ message: 'No events found chack back later' })
         }

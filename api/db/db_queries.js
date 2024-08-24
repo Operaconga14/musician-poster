@@ -30,8 +30,38 @@ const event_table_query = `(
     updatedAt DATE
 )`
 
+// gigs query
+const gig_table_query = `(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type varchar(100),
+    title varchar(100),
+    description varchar(100),
+    username varchar(100),
+    price INT,
+    contact varchar(100),
+    date DATETIME,
+    createdAt DATETIME,
+    updatedAt DATETIME
+)`
+
+// vacancy query
+const vacancies_table_query = `(
+    Vacancy_ID int AUTO_INCREMENT PRIMARY KEY,
+    title varchar(100),
+    description varchar(100),
+    type varchar(64),
+    location varchar(100),
+    username varchar(100),
+    deadline DATE,
+    contact varchar(100),
+    createdAt DATE,
+    updatedAt DATE
+)`
+
 
 module.exports = {
     user_table_query,
-    event_table_query
+    event_table_query,
+    gig_table_query,
+    vacancies_table_query
 }
