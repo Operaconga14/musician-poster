@@ -123,7 +123,6 @@ module.exports = {
       },
       image: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       description: {
         type: Sequelize.STRING,
@@ -131,7 +130,6 @@ module.exports = {
       },
       genre: {
         type: Sequelize.STRING,
-        allowNull: true
       },
       time: {
         type: Sequelize.TIME,
@@ -147,7 +145,6 @@ module.exports = {
       },
       location: {
         type: Sequelize.STRING,
-        allowNull: false
       },
       postedBy: {
         type: Sequelize.STRING

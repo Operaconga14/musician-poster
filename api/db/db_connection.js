@@ -15,7 +15,7 @@ const mysql = mysql2.createConnection({
 
 
 // connect to local database
-async function connectToLocal() {
+async function connectToDatabase() {
     mysql.connect((error) => {
         if (error) {
             return console.error('Error connecting to the database:', error)
@@ -26,5 +26,5 @@ async function connectToLocal() {
 
 
 module.exports = {
-    connectToLocal
+    connectToDatabase
 }

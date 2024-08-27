@@ -57,6 +57,7 @@ cloudinary.config({
     api_key: process.env.CLOUD_APIKEY,
     api_secret: process.env.CLOUD_SECRET,
     cloud_name: process.env.CLOUD_NAME,
+    sign_url: true
 })
 
 module.exports = {

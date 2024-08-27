@@ -1,56 +1,50 @@
+const { DataTypes } = require("sequelize");
 const { sequelize } = require(".");
 const User = require("./user");
 
 const Event = sequelize.define('Event', {
-    id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-    },
     title: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             len: [1, 255]
         }
     },
     image: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: DataTypes.STRING,
     },
     description: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     genre: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: DataTypes.STRING,
     },
     time: {
-        type: Sequelize.TIME,
+        type: DataTypes.TIME,
         allowNull: false
     },
     date: {
-        type: Sequelize.DATEONLY,
+        type: DataTypes.DATEONLY,
         allowNull: false
     },
     contact: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     location: {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: DataTypes.STRING,
     },
     postedBy: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING
     },
     createdAt: {
-        type: Sequelize.DATE
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
     updatedAt: {
-        type: Sequelize.DATE
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: false,
@@ -58,7 +52,7 @@ const Event = sequelize.define('Event', {
     paranoid: true
 })
 
-Event.belongsTo(User, { foreignKey: 'username' })
-User.hasMany(Event, { foreignKey: 'username' })
+Event.belongsTo(User, { foreignKey: 'postedBy' })
+User.hasMany(Event, { foreignKey: 'postedBy' })
 
 module.exports = Event

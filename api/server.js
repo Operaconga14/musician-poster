@@ -1,7 +1,7 @@
 const { api_url, cors_options } = require("./config/config");
 const { express, cookie_parser, morgan, cors } = require("./config/node_packages");
-const { connectToLocal } = require("./db/db_connection");
-const { user_router } = require("./routes/route.controller");
+const { connectToDatabase } = require("./db/db_connection");
+const { user_router, event_router } = require("./routes/route.controller");
 
 const app = express()
 
@@ -30,6 +30,8 @@ app.get(`${api_url.url}`, (req, res) => {
 })
 // user router
 app.use(`${api_url.url}user`, user_router)
+// event router
+app.use(`${api_url.url}event`, event_router)
 
 
 
@@ -37,6 +39,6 @@ app.use(`${api_url.url}user`, user_router)
 
 app.listen(api_url.port, () => {
     // connect to dtabase
-    connectToLocal()
+    connectToDatabase()
     console.log(`listening to ${api_url.port} url: http://localhost:${api_url.port}${api_url.url}`)
 })

@@ -6,7 +6,13 @@ module.exports = {
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
         host: process.env.DB_HOST,
-        dialect: 'mysql'
+        dialect: 'mysql',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false, // Use true if you want to verify the server's SSL certificate
+            }
+        }
     },
     test: {
         username: process.env.LOCAL_USER,
@@ -20,6 +26,12 @@ module.exports = {
         password: process.env.DB_PASSWORD,
         database: `${process.env.DB_DATABASE}_production`,
         host: process.env.DB_HOST,
-        dialect: 'mysql'
+        dialect: 'mysql',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false, // Use true if you want to verify the server's SSL certificate
+            }
+        }
     }
 }
