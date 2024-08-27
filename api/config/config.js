@@ -1,15 +1,18 @@
-const { user_table_query, event_table_query, gig_table_query, vacancies_table_query } = require("../db/db_queries")
-const { dotenv, Sequelize, cloudinary, multer } = require("./node_packages")
+const { dotenv, multer, cloudinary } = require("./node_packages");
 dotenv
 
-// cors configuration option
-const cors_options = {
+const defaultPicture = process.env.DEFAULT_IMG
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
+const multipart_form = multer()
+
+const cors_option = {
     allowed_origin: ['https://mugivies.vercel.app', 'http://localhost:4200']
 }
 
-const cors_option = {
+const cors_options = {
     origin: (origin, callback) => {
-        if (cors_options.allowed_origin.indexOf(origin) !== -1 || !origin) {
+        if (cors_option.allowed_origin.indexOf(origin) !== -1 || !origin) {
             callback(null, true)
         } else {
             callback(new Error('Not allowed by CORS'))
@@ -34,49 +37,21 @@ const cloud_db_options = {
     db_connection_limit: process.env.DB_CONNECTION_LIMIT
 }
 
-// database local config
+// localhost
 const local_db_options = {
-    db_name: process.env.DB_NAME,
-    db_user: process.env.DB_USER,
-    db_pass: process.env.DB_PASSWORD,
-    db_host: process.env.DB_HOST,
+    db_name: `${process.env.LOCAL_NAME}_test`,
+    db_user: process.env.LOCAL_USER,
+    db_pass: process.env.LOCAL_PASSWORD,
+    db_host: process.env.LOCAL_HOST,
+    db_connection_limit: 5
 }
 
-// database queries option
-const db_queries = {
-    user_table_name: 'users',
-    user_query: user_table_query,
-    default_image: process.env.DEFAULT_PROFILE_PICTURE,
-    event_table_name: 'events',
-    event_query: event_table_query,
-    // gadget_table_name: 'gadgets',
-    // gadget_query: gadget_table_query,
-    // post_table_name: 'posts',
-    // post_query: post_table_query,
-    // services_table_name: 'services',
-    // services_query: services_table_query,
-    gigs_table_name: 'gigs',
-    gigs_query: gig_table_query,
-    vacancy_table_name: 'vacancies',
-    vacancy_query: vacancies_table_query
+// jwt authentication config option
+const auth_jwt = {
+    secret: process.env.AUTH_SECRET,
 }
 
-// cloud sequelize config
-const sequelize = new Sequelize(cloud_db_options.db_name, cloud_db_options.db_user, cloud_db_options.db_pass, {
-    host: cloud_db_options.db_host,
-    dialect: 'mysql',
-    port: cloud_db_options.db_port,
-    dialectOptions: {
-        ssl: {
-            rejectUnauthorized: false,
-        }
-    },
-    retry: {
-        max: 3
-    }
-})
-
-// cloudinary config
+//  cloudinary config
 cloudinary.config({
     secure: true,
     api_key: process.env.CLOUD_APIKEY,
@@ -84,46 +59,15 @@ cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
 })
 
-// jwt authentication config option
-const auth_jwt = {
-    secret: process.env.AUTH_SECRET,
-    payload: {},
-    header: {},
-    token: undefined,
-    jwt: undefined,
-    auth_header: undefined,
-    auth: undefined,
-    user: undefined,
-    hashed_password: undefined,
-    salt: undefined,
-    is_match: undefined,
-    updated_user: undefined,
-    default_picture: undefined
-}
-
-const test_img_upload = process.env.DEFAULT_IMG
-
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
-const multipart_form = multer()
-
-const date_option = {
-    options: undefined,
-    now: undefined,
-    formatted_date: undefined
-}
-
 module.exports = {
-    api_url,
-    cloud_db_options,
-    local_db_options,
-    db_queries,
-    sequelize,
-    cloudinary,
-    auth_jwt,
-    cors_option,
-    test_img_upload,
+    defaultPicture,
+    storage,
     upload,
-    date_option,
-    multipart_form
+    multipart_form,
+    cors_options,
+    api_url,
+    local_db_options,
+    cloud_db_options,
+    auth_jwt,
+    cloudinary
 }
