@@ -1,7 +1,7 @@
 const { api_url, cors_options } = require("./config/config");
 const { express, cookie_parser, morgan, cors } = require("./config/node_packages");
 const { connectToDatabase } = require("./db/db_connection");
-const { user_router, event_router } = require("./routes/route.controller");
+const { user_router, event_router, post_router, gig_router } = require("./routes/route.controller");
 
 const app = express()
 
@@ -20,7 +20,7 @@ app.use(cors(cors_options))
  * gigs route => done not completed
  * service route => last to do
  * gadget route =>
- * post route =>
+ * post route => done not completed
  * vaccancies route =>
  */
 
@@ -32,6 +32,10 @@ app.get(`${api_url.url}`, (req, res) => {
 app.use(`${api_url.url}user`, user_router)
 // event router
 app.use(`${api_url.url}event`, event_router)
+// post router
+app.use(`${api_url.url}post`, post_router)
+// gig router
+app.use(`${api_url.url}gig`, gig_router)
 
 
 
