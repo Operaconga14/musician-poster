@@ -54,7 +54,7 @@ router.post('/auth/login', async (req, res) => {
         });
 
         if (!user) {
-            return res.status(400).json({ message: 'User not found or wrong email and password' });
+            return res.status(404).json({ message: 'User not found or wrong email and password' });
         }
 
         // Compare password

@@ -1,4 +1,4 @@
-const { express, Readable } = require('../../config/node_packages')
+const { express, Readable, Op } = require('../../config/node_packages')
 const { authenticate_user } = require('../../helper/jwt')
 const { upload, multipart_form, cloudinary } = require('../../config/config')
 const Post = require('../../../models/post')
@@ -36,6 +36,38 @@ router.get('/posts', async (req, res) => {
     }
 })
 
+// get post by id api
+router.get('/post/:id', async (req, res) => {
+    const post_id = req.params.id
+    try {
+        const post = await Post.findByPk(post_id)
+        if (!post) {
+            return res.status(404).json({ message: 'No post found chack back later' })
+        }
+        return res.status(201).json({ post: post })
+
+    } catch (err) {
+        return res.status(501).json({ message: 'Database error', err })
+    }
+})
+
+// get newly created post
+router.get('/newposts', async (req, res) => {
+    const aWeeekAgo = new Date()
+    aWeeekAgo.setDate(aWeeekAgo.getDay() - 7)
+    try {
+        const post = await Post.findAll({ where: { createdAt: { [Op.gte]: aWeeekAgo } }, limit: 10 })
+        if (!post || post.length === 0) {
+            return res.status(404).json({ message: 'No new posts found chack back later' })
+        }
+        return res.status(201).json({ post: post })
+
+    } catch (err) {
+        console.error(err)
+        return res.status(501).json({ message: 'Database error', err })
+    }
+})
+
 // create post
 router.post('/create', authenticate_user, multipart_form.any(), async (req, res) => {
     const { title, description } = req.body
@@ -44,6 +76,8 @@ router.post('/create', authenticate_user, multipart_form.any(), async (req, res)
             title: title,
             description: description,
             postedBy: req.user.username,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
         })
 
         return res.status(201).json({ message: 'Post created successfully\nGo to your dashboad to complete editing your post', post })

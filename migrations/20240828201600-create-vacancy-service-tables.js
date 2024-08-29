@@ -3,91 +3,97 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Gigs', {
+    await queryInterface.createTable('Vacancies', {
       id: {
         allowNull: false,
         autoIncrement: true,
-        type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          len: [1, 255]
+        }
       },
       description: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       type: {
         type: Sequelize.STRING,
+        allowNull: false,
+      },
+      location: {
+        type: Sequelize.STRING
+      },
+      password: {
+        type: Sequelize.STRING,
         allowNull: false
       },
-      instruments: {
+      date: {
+        type: Sequelize.DATEONLY,
+        allowNull: false
+      },
+      contact: {
         type: Sequelize.STRING
       },
       price: {
         type: Sequelize.INTEGER
       },
-      date: {
-        type: Sequelize.DATE,
-        allowNull: false
+      deadline: {
+        type: Sequelize.DATE
       },
-      time: {
-        type: Sequelize.TIME,
-        allowNull: false
-      },
-      location: {
+      postedBy: {
         type: Sequelize.STRING
       },
-      contact: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
       createdAt: {
+        allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
       },
       updatedAt: {
+        allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
       }
-    })
+    });
 
-    await queryInterface.createTable('Posts', {
+    // create events table
+    await queryInterface.createTable('Services', {
       id: {
         allowNull: false,
         autoIncrement: true,
-        type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.INTEGER
       },
       title: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          len: [1, 255]
+        }
+      },
+      type: {
+        type: Sequelize.STRING,
       },
       description: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      image: {
+      price: {
+        type: Sequelize.INTEGER,
+      },
+      contact: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      location: {
+        type: Sequelize.STRING,
+      },
+      postedBy: {
         type: Sequelize.STRING
-      },
-      facebook: {
-        type: Sequelize.STRING,
-
-      },
-      instagram: {
-        type: Sequelize.STRING,
-      },
-      boomplay: {
-        type: Sequelize.STRING,
-      },
-      applemusic: {
-        type: Sequelize.STRING,
-      },
-      spotify: {
-        type: Sequelize.STRING,
-      },
-      tiktok: {
-        type: Sequelize.STRING,
-      },
-      audiomack: {
-        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -103,7 +109,11 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Posts')
-    await queryInterface.dropTable('Gigs')
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
   }
 };

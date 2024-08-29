@@ -1,4 +1,4 @@
-const { express, Readable } = require('../../config/node_packages')
+const { express, Readable, Op } = require('../../config/node_packages')
 const { authenticate_user } = require('../../helper/jwt')
 const { upload, multipart_form, cloudinary } = require('../../config/config')
 const Gig = require('../../../models/gig')
@@ -13,7 +13,7 @@ router.get('', (req, res) => {
 router.get('/my', authenticate_user, async (req, res) => {
     const username = req.user.username
     try {
-        const gigs = await Gig.findAll({ where: { gigedBy: username } })
+        const gigs = await Gig.findAll({ where: { postedBy: username } })
         if (!gigs || gigs <= 0) {
             return res.status(404).json({ message: 'You have not created any Gig yet' })
         }
@@ -33,6 +33,38 @@ router.get('/gigs', async (req, res) => {
         return res.status(201).json({ message: 'Gigs found', gigs: gigs })
     } catch (error) {
         return res.status(500).json({ message: 'Database error!', error })
+    }
+})
+
+// get gig by id api
+router.get('/gig/:id', async (req, res) => {
+    const gig_id = req.params.id
+    try {
+        const gig = await Gig.findByPk(gig_id)
+        if (!gig) {
+            return res.status(404).json({ message: 'No gig found chack back later' })
+        }
+        return res.status(201).json({ gig: gig })
+
+    } catch (err) {
+        return res.status(501).json({ message: 'Database error', err })
+    }
+})
+
+// get newly created gig
+router.get('/newgigs', async (req, res) => {
+    const aWeeekAgo = new Date()
+    aWeeekAgo.setDate(aWeeekAgo.getDay() - 7)
+    try {
+        const gig = await Gig.findAll({ where: { createdAt: { [Op.gte]: aWeeekAgo } }, limit: 10 })
+        if (!gig || gig.length === 0) {
+            return res.status(404).json({ message: 'No new gigs found chack back later' })
+        }
+        return res.status(201).json({ gig: gig })
+
+    } catch (err) {
+        console.error(err)
+        return res.status(501).json({ message: 'Database error', err })
     }
 })
 

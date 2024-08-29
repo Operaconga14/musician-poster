@@ -1,7 +1,7 @@
 const { api_url, cors_options } = require("./config/config");
 const { express, cookie_parser, morgan, cors } = require("./config/node_packages");
 const { connectToDatabase } = require("./db/db_connection");
-const { user_router, event_router, post_router, gig_router } = require("./routes/route.controller");
+const { user_router, event_router, post_router, gig_router, service_router, vacancy_router, gadget_router } = require("./routes/route.controller");
 
 const app = express()
 
@@ -36,9 +36,12 @@ app.use(`${api_url.url}event`, event_router)
 app.use(`${api_url.url}post`, post_router)
 // gig router
 app.use(`${api_url.url}gig`, gig_router)
-
-
-
+// service router
+app.use(`${api_url.url}service`, service_router),
+    // vacancy router
+    app.use(`${api_url.url}vacancy`, vacancy_router)
+// gadget router
+app.use(`${api_url.url}gadget`, gadget_router)
 
 
 app.listen(api_url.port, () => {

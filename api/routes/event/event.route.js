@@ -1,4 +1,4 @@
-const { express, Readable } = require("../../config/node_packages");
+const { express, Readable, Op } = require("../../config/node_packages");
 const Event = require('../../../models/event');
 const { authenticate_user } = require("../../helper/jwt");
 const { multipart_form, upload, cloudinary } = require("../../config/config");
@@ -25,6 +25,21 @@ router.get('/my', authenticate_user, async (req, res) => {
     }
 })
 
+// get event by id api
+router.get('/event/:id', async (req, res) => {
+    const event_id = req.params.id
+    try {
+        const event = await Event.findByPk(event_id)
+        if (!event) {
+            return res.status(404).json({ message: 'No events found chack back later' })
+        }
+        return res.status(201).json({ event: event })
+
+    } catch (err) {
+        return res.status(501).json({ message: 'Database error', err })
+    }
+})
+
 // get all event
 router.get('/events', async (req, res) => {
     try {
@@ -35,6 +50,23 @@ router.get('/events', async (req, res) => {
         return res.status(201).json({ message: 'Events found', events: events })
     } catch (error) {
         return res.status(500).json({ message: 'Database error!', error })
+    }
+})
+
+// get newly created event
+router.get('/newevents', async (req, res) => {
+    const aWeeekAgo = new Date()
+    aWeeekAgo.setDate(aWeeekAgo.getDay() - 7)
+    try {
+        const event = await Event.findAll({ where: { createdAt: { [Op.gte]: aWeeekAgo } }, limit: 10 })
+        if (!event || event.length === 0) {
+            return res.status(404).json({ message: 'No new events found chack back later' })
+        }
+        return res.status(201).json({ event: event })
+
+    } catch (err) {
+        console.error(err)
+        return res.status(501).json({ message: 'Database error', err })
     }
 })
 
